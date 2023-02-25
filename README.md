@@ -1,2 +1,2 @@
-# telegram-kojamo-bot
-A telegram bot following a tutorial. For school assignment
+# Discord Bot
+Practising for school assignment
