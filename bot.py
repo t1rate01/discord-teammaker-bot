@@ -8,7 +8,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-TOKEN = '6076970534:AAEKfopozvYOQ6af67Bg5B5uvgszGXjGQ1A'
+TOKEN = '6050053846:AAGGQpUwFuSWyB0_-7sVqSeSP6xGuXH8n30'
 heroku_url = 'https://telegram-kojamo-bot.herokuapp.com/'
 
 # Define a few command handlers. These usually take the two arguments update and
