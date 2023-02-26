@@ -21,30 +21,32 @@ async def vibes(ctx):
     await ctx.send("Good vibes!")
 
 @bot.command()
-
 async def teamshere(ctx):
     if not ctx.author.voice:
-        await ctx.send("Et ole millään kanavalla")
+        await ctx.send("Et ole millään kanavalla....")
         return
 
-    kanava = ctx.author.voice.channel
-    members = kanava.members
-
-    if len(members) < 6:
-        await ctx.send("Ei teitä ole tarpeeksi, menkää nukkumaan")
-        return
-
-    member_names = [member.name for member in members]
+    voice_channel = ctx.author.voice.channel
+    members = voice_channel.members
+    member_names = [member.name for member in members][:10]
     random.shuffle(member_names)
 
-    num_teams = 2
-    team_size = (len(member_names) + num_teams -1) // num_teams
+    num_members = len(member_names)
+    if num_members < 2:
+        await ctx.send("Ei teitä ole tarpeeksi, menkää nukkumaan!")
+        return
 
-    teams = [member_names[i:i+team_size] for i in range(0, len(member_names),team_size)]
-    
-    team_strings = [f"Tiimi {i+1}: {', '.join(team)}" for i, team in enumerate(teams)]
+    team_size = num_members // 2
+    teams = [member_names[i:i+team_size] for i in range(0, num_members, team_size)]
 
-    await ctx.send('/n'.join(team_strings))
+   # Jos pariton määrä, ylimääränen ekaan tiimiin
+    if num_members % 2 == 1:
+        teams[0].append(teams[1].pop())
+
+    team_strings = [f"Team {i+1}: {', '.join(team)}" for i, team in enumerate(teams)]
+
+    await ctx.send('\n'.join(team_strings))
+
 
 @bot.command() 
 
