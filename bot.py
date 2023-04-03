@@ -215,7 +215,8 @@ async def defroulette(ctx):
 @bot.command()
 
 async def map(ctx):
-    await ctx.send(rankedmaps(random.randint(1,16)))
+    mappi = random.choice(list(rankedmaps.values()))
+    await ctx.send(f"{mappi}")
 
 
 
