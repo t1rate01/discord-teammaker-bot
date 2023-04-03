@@ -10,7 +10,7 @@ client = discord.Client(intents=intents)
 
 bot = commands.Bot(command_prefix='!', intents=intents, case_insensitive=True)
 
-token ='MTA3ODk3OTU4MDA2NjUzMzM5Ng.GO_d7t.DYasqEjtuLAFFWlPC8oT2HlOmhbhJ-PKYcmbhs'
+token =''
 
 attackers = {
     1: "Thatcher",
