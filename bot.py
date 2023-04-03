@@ -1,65 +1,81 @@
-import logging
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import os
-PORT = int(os.environ.get('PORT', '8443'))
 
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
 
-logger = logging.getLogger(__name__)
-TOKEN = '6050053846:AAGGQpUwFuSWyB0_-7sVqSeSP6xGuXH8n30'
-heroku_url = 'https://telegram-kojamo-bot.herokuapp.com/'
+import random
+import discord
+from discord.ext import commands
+intents = discord.Intents.default()
+intents.message_content = True
+client = discord.Client(intents=intents)
 
-# Define a few command handlers. These usually take the two arguments update and
-# context. Error handlers also receive the raised TelegramError object in error.
-def start(update, context):
-    """Send a message when the command /start is issued."""
-    update.message.reply_text('Hi!')
 
-def help(update, context):
-    """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
+bot = commands.Bot(command_prefix='!', intents=intents, case_insensitive=True)
 
-def echo(update, context):
-    """Echo the user message."""
-    update.message.reply_text(update.message.text)
+token ='YOUR TOKEN HERE'
 
-def error(update, context):
-    """Log Errors caused by Updates."""
-    logger.warning('Update "%s" caused error "%s"', update, context.error)
+@bot.command()
 
-def main():
-    """Start the bot."""
-    # Create the Updater and pass it your bot's token.
-    # Make sure to set use_context=True to use the new context based callbacks
-    # Post version 12 this will no longer be necessary
-    updater = Updater(TOKEN, use_context=True)
+async def hello(ctx):
+        await ctx.send("Hello!")
+
+@bot.command()
+
+async def vibes(ctx):
+    await ctx.send("Good vibes!")
+
+@bot.command()
+async def teamshere(ctx):
+    if not ctx.author.voice:
+        await ctx.send("Et ole millään kanavalla....")
+        return
+
+    voice_channel = ctx.author.voice.channel
+    members = voice_channel.members
+    member_names = [member.name for member in members][:10]
+    random.shuffle(member_names)
+
+    num_members = len(member_names)
+    if num_members < 2:
+        await ctx.send("Ei teitä ole tarpeeksi, menkää nukkumaan!")
+        return
+
+    team_size = num_members // 2
+    teams = [member_names[i:i+team_size] for i in range(0, num_members, team_size)]
+
+   # Jos pariton määrä, ylimääränen ekaan tiimiin
+    if num_members % 2 == 1:
+        teams[0].append(teams[1].pop())
+
+    team_strings = [f"Team {i+1}: {', '.join(team)}" for i, team in enumerate(teams)]
+
+    await ctx.send('\n'.join(team_strings))
+
+
+@bot.command() 
+
+async def team(ctx):
+    await ctx.send("Anna 10 nimeä pilkulla erotettuna")
+
+    def check(msg):
+        return msg.author == ctx.author and msg.channel == ctx.channel
     
+    try:
+        msg = await bot.wait_for('message',check=check, timeout=45.0)
+    except asyncio.TimeoutError:
+        await ctx.send("Liian hidas! Yritä uudelleen!")
+        return
 
-    # Get the dispatcher to register handlers
-    dp = updater.dispatcher
+    nicknames = msg.content.split(",")
+    nicknames = [nickname.strip() for nickname in nicknames]
 
-    # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("help", help))
+    if len(nicknames) != 10:
+        await ctx.send("Sori, ei teitä ole tarpeeksi....")
+        return
 
-    # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(MessageHandler(Filters.text, echo))
+    random.shuffle(nicknames)
+    team1 = nicknames[:5]
+    team2 = nicknames[5:]
 
-    # log all errors
-    dp.add_error_handler(error)
+    await ctx.send(f"Tiimi 1: {', '.join(team1)}\nTiimi 2: {', '.join(team2)}")
 
-     # Start the Bot
-    updater.start_webhook(listen="0.0.0.0",
-    port=int(PORT),
-    url_path=TOKEN,
-    webhook_url='https://telegram-kojamo-bot.herokuapp.com/' + TOKEN)
+bot.run(token)
 
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
-
-if __name__ == '__main__':
-    main()
