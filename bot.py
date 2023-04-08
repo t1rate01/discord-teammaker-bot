@@ -174,9 +174,11 @@ async def attroulette(ctx):
     for i in range(len(members)):
         attacker_assignments[members[i].name] = available_attackers[i % len(available_attackers)]
     
-    await ctx.send("Attacker assignments:")
+    
     for member, attacker in attacker_assignments.items():
-        await ctx.send(f"{member}: {attacker}")
+        message += f"{member}: {attacker}"
+    await ctx.send("Roolit: \n" +message)
+
 
     
 @bot.command() 
@@ -208,9 +210,10 @@ async def defroulette(ctx):
     for i in range(len(members)):
         defender_assignments[members[i].name] = available_defenders[i % len(available_defenders)]
     
-    await ctx.send("Attacker assignments:")
+    
     for member, defender in defender_assignments.items():
-        await ctx.send(f"{member}: {defender}")
+        message+= f"{member}: {defender}\n"
+    await ctx.send("Roolit: \n "+message)
 
 @bot.command()
 
