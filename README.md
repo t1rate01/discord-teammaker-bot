@@ -1,2 +1,2 @@
 # Discord Bot
-Practising for school assignment
+Practising and getting my first touch of Python.
