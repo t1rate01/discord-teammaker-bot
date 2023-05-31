@@ -1,16 +1,15 @@
-
-
 import random
 import discord
 from discord.ext import commands
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
+from config import TOKEN
 
 
 bot = commands.Bot(command_prefix='!', intents=intents, case_insensitive=True)
 
-token =''
+token = TOKEN
 
 attackers = {
     1: "Thatcher",
@@ -174,7 +173,7 @@ async def attroulette(ctx):
     for i in range(len(members)):
         attacker_assignments[members[i].name] = available_attackers[i % len(available_attackers)]
     
-    
+    message = ""
     for member, attacker in attacker_assignments.items():
         message += f"{member}: {attacker}"
     await ctx.send("Roolit: \n" +message)
@@ -210,7 +209,7 @@ async def defroulette(ctx):
     for i in range(len(members)):
         defender_assignments[members[i].name] = available_defenders[i % len(available_defenders)]
     
-    
+    message = ""
     for member, defender in defender_assignments.items():
         message+= f"{member}: {defender}\n"
     await ctx.send("Roolit: \n "+message)
