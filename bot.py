@@ -4,12 +4,12 @@ from discord.ext import commands
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
-from config import TOKEN
+import os
 
 
 bot = commands.Bot(command_prefix='!', intents=intents, case_insensitive=True)
 
-token = TOKEN
+token = os.getenv('TOKEN')
 
 attackers = {
     1: "Thatcher",
