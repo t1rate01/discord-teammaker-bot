@@ -175,7 +175,7 @@ async def attroulette(ctx):
     
     message = ""
     for member, attacker in attacker_assignments.items():
-        message += f"{member}: {attacker}"
+        message += f"{member}: {attacker}\n"
     await ctx.send("Roolit: \n" +message)
 
 
