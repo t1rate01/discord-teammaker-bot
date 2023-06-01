@@ -1,118 +1,60 @@
 import random
 import discord
+import json
+from pymongo import MongoClient
 from discord.ext import commands
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 import os
-
+from operators import attackers, defenders, rankedmaps
 
 bot = commands.Bot(command_prefix='!', intents=intents, case_insensitive=True)
 
-token = os.getenv('TOKEN')
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
-attackers = {
-    1: "Thatcher",
-    2: "Maverick",
-    3: "Nomad",
-    4: "Zero",
-    5: "Ace",
-    6: "Brava",
-    7: "Finka",
-    8: "Hibana",
-    9: "Iana",
-    10: "Jackal",
-    11: "Sledge",
-    12: "Twitch",
-    13: "Zofia",
-    14: "Ash",
-    15: "Blackbeard",
-    16: "Buck",
-    17: "Capitao",
-    18: "Flores",
-    19: "Grim",
-    20: "IQ",
-    21: "Lion",
-    22: "Osa",
-    23: "Thermite",
-    24: "Amaru",
-    25: "Dokkaebi",
-    26: "Fuze",
-    27: "Gridlock",
-    28: "Kali",
-    29: "Nøkk",
-    30: "Sens",
-    31: "Ying",
-    32: "Blitz",
-    33: "Glaz",
-    34: "Montagne"
-}
+try:
+    from config import MONGO_URL
+    client = MongoClient(MONGO_URL, server_api=ServerApi('1'))
+    db = client.diskodb
+except ImportError:
+    MONGO_URL = os.environ["MONGO_URL"]
+    client = MongoClient(MONGO_URL, server_api=ServerApi('1'))
+    db = client.diskodb
 
-defenders = {
-    1: "Jäger",
-    2: "Valkyrie",
-    3: "Aruni",
-    4: "Azami",
-    5: "Bandit",
-    6: "Ela",
-    7: "Kaid",
-    8: "Kapkan",
-    9: "Mira",
-    10: "Mozzie",
-    11: "Smoke",
-    12: "Wamai",
-    13: "Alibi",
-    14: "Echo",
-    15: "Lesion",
-    16: "Maestro",
-    17: "Melusi",
-    18: "Mute",
-    19: "Pulse",
-    20: "Solis",
-    21: "Thorn",
-    22: "Thunderbird",
-    23: "Vigil",
-    24: "Castle",
-    25: "Doc",
-    26: "Frost",
-    27: "Goyo",
-    28: "Oryx",
-    29: "Rook",
-    30: "Tachanka",
-    31: "Warden",
-    32: "Caveira",
-    33: "Clash"
-}
+# KESKEN: TARKISTA ETTÄ DATABASE TOIMII, JOS DATABASE TYHJÄ NIIN TEE TYHJÄ JSON
+# VALMIS 
+# SEURAAVAKSI: DESIGNATED CHANNEL FUNCTIO JA TALLENNUS DATABASEEN
+try:
+    from config import TOKEN
+    token = TOKEN
+except ImportError:
+    token = os.environ["TOKEN"]
 
-rankedmaps = {
-    1: "Nighthaven Labs",
-    2: "Kafe Dostoyevsky",
-    3: "Oregon",
-    4: "Border",
-    5: "Chalet",
-    6: "Clubhouse",
-    7: "Stadium",
-    8: "Bank",
-    9: "Consulate",
-    10: "Coastline",
-    11: "Villa",
-    12: "Theme Park",
-    13: "Kanal",
-    14: "Outback",
-    15: "Emerald Plains",
-    16: "Skyscraper"
-}
+collection = db["diskodb"]
 
+def startup():
+    data = collection.find_one()
 
-    
+    if data:
+        # jos on dataa
+        with open('data.json', 'w') as file:
+            json.dump(data, file)
+    else:
+        # jos ei ole dataa
+        with open('data.json', 'w') as file:
+            json.dump({}, file)
+            # Uppaa mongoDB:hen ja anna id jota käytetään
+        collection.insert_one({"_id": "server_channel_info"})
+
+startup()
 
 @bot.command()
-
 async def hello(ctx):
         await ctx.send("Peliä!")
 
 @bot.command()
-
 async def vibes(ctx):
     await ctx.send("Good vibes!")
 
