@@ -17,11 +17,11 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
 try:
-    from config import MONGO_URL
+    from config import MONGO_URL # check if config file available (local run/dev mode)
     client = MongoClient(MONGO_URL, server_api=ServerApi('1'))
     db = client.diskodb
 except ImportError:
-    MONGO_URL = os.environ["MONGO_URL"]
+    MONGO_URL = os.environ["MONGO_URL"] # if no config.py, must be in cloud, value from env
     client = MongoClient(MONGO_URL, server_api=ServerApi('1'))
     db = client.diskodb
 
