@@ -104,6 +104,8 @@ class Queue:            # JONO OLIO, sisältää taulukon jonottajista ja getter
         return self.queue
 
  ## ------------------- BOT COMMANDS ------------------- ##   
+
+ # BAN ROULETTE ATT BANNI DEF BANNI + VARA ATT BANNI + VARA DEF BANNI
         
 startup()
 print("Bot starting...")
